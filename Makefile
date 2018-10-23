@@ -21,7 +21,7 @@ SOURCES = source/main.c source/make_fractal.c source/error_file.c\
         source/find_iter_bonus_fractal.c
 
 HEADERS = include/structs.h include/fractol.h 
-INCLUDES = -I libft/ -I include/
+INCLUDES = -I libft/include/ -I include/
 
 OBJ = $(addprefix $(OBJDIR), $(notdir $(SOURCES:.c=.o)))
 OBJDIR = obj/
@@ -32,23 +32,29 @@ NAME = fractol
 all: $(NAME)
 
 $(NAME): $(HEADERS) $(OBJDIR) $(OBJ) $(LIBFT)
-	$(CC) $(OBJ) $(FDF_FLAGS) -o $@ $(LIBFT)
+	@$(CC) $(OBJ) $(FDF_FLAGS) -o $@ $(LIBFT)
+	@echo ${BG}"[ ✓ ] $@"
 
 $(OBJDIR)%.o: source/%.c
-	$(CC)  $(C_FLAGS) $< -o $@ $(INCLUDES)
+	@$(CC)  $(C_FLAGS) $< -o $@ $(INCLUDES)
+	@echo ${BG}"[ ✓ ] $@"
 
 $(LIBFT):
-	make -C libft
+	@make -C libft
 
 $(OBJDIR):
-	mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 
 clean:
-	rm -f $(OBJ)
-	rm -rf $(OBJDIR)
+	@make -C libft clean
+	@rm -f $(OBJ)
+	@rm -rf $(OBJDIR)
+	@echo ${BR}"[ ✗ ] $(OBJDIR)"
 
 fclean: clean
-	echo $(OBJ)
-	rm -f $(NAME)
+	@make -C libft fclean
+	@echo $(OBJ)
+	@rm -f $(NAME)
+	@echo ${BR}"[ ✗ ] $(NAME)"
 
 re: fclean all

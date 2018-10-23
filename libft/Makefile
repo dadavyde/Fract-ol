@@ -13,37 +13,82 @@
 CC = gcc 
 CFLAGS = -c -Wall -Wextra -Werror
 
-SOURCES = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c \
-ft_memchr.c ft_memcmp.c ft_strlen.c ft_strdup.c ft_strcpy.c ft_strncpy.c \
-ft_strcat.c ft_strncat.c ft_strlcat.c ft_strchr.c ft_strrchr.c ft_strstr.c \
-ft_strnstr.c ft_strcmp.c ft_strncmp.c ft_atoi.c ft_isalpha.c ft_isdigit.c \
-ft_isalnum.c ft_isascii.c ft_isprint.c ft_toupper.c ft_tolower.c ft_memalloc.c \
-ft_memdel.c ft_strnew.c ft_strdel.c ft_strclr.c ft_striter.c ft_striteri.c ft_strmap.c \
-ft_strmapi.c ft_strequ.c ft_strnequ.c ft_strsub.c ft_strjoin.c ft_strtrim.c ft_strsplit.c \
-ft_itoa.c ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c ft_putstr_fd.c \
-ft_putendl_fd.c ft_putnbr_fd.c ft_lstnew.c ft_lstdelone.c ft_lstdel.c ft_lstadd.c ft_lstiter.c \
-ft_lstmap.c ft_put_carray.c ft_put_iarray.c ft_del_all_c.c ft_find_c.c ft_arraycpy.c \
-get_next_line.c \
-ft_find_all_c.c ft_find_after_c.c
+BG			=	"\033[32;1m"
+BR			=	"\033[31;1m"
 
-INCLUDES = libft.h get_next_line.h
+SOURCES = memory/ft_memset.c memory/ft_memcpy.c memory/ft_memccpy.c memory/ft_memmove.c \
+		memory/ft_memdel.c memory/ft_memalloc.c memory/ft_memchr.c memory/ft_memcmp.c \
+		str/ft_strlen.c str/ft_strdup.c str/ft_strcpy.c str/ft_strncpy.c \
+		str/ft_strcat.c str/ft_strncat.c str/ft_strlcat.c str/ft_strchr.c \
+		str/ft_strrchr.c str/ft_strstr.c str/ft_strnstr.c str/ft_strcmp.c \
+		str/ft_strncmp.c str/ft_strnew.c str/ft_strdel.c str/ft_strclr.c \
+		str/ft_striter.c str/ft_striteri.c str/ft_strmap.c str/ft_strmapi.c \
+		str/ft_strequ.c str/ft_strnequ.c str/ft_strsub.c str/ft_strjoin.c \
+		str/ft_strtrim.c str/ft_strsplit.c \
+		is/ft_isalpha.c is/ft_isdigit.c is/ft_isalnum.c is/ft_isascii.c is/ft_isprint.c \
+		put/ft_putchar.c put/ft_putstr.c put/ft_putendl.c put/ft_putnbr.c \
+		put/ft_put_carray.c put/ft_put_iarray.c put/ft_putnbr_fd.c \
+		put/ft_putchar_fd.c put/ft_putstr_fd.c put/ft_putendl_fd.c \
+		lists/ft_lstnew.c lists/ft_lstdelone.c lists/ft_lstdel.c lists/ft_lstadd.c \
+		lists/ft_lstiter.c lists/ft_lstmap.c \
+		find/ft_find_all_c.c find/ft_find_after_c.c find/ft_find_c.c \
+		ft_del_all_c.c ft_arraycpy.c get_next_line.c ft_bzero.c ft_atoi.c \
+		ft_toupper.c ft_tolower.c ft_itoa.c
 
-OBJ = $(SOURCES:.c=.o)
+HEADERS = include/libft.h include/get_next_line.h 
+INCLUDES = -I include/
+
+OBJ = $(addprefix $(OBJDIR), $(notdir $(SOURCES:.c=.o)))
+OBJDIR = obj/
+
 NAME = libft.a
 
 all: $(NAME)
-	
-%.o: %.c
-	$(CC) $(CFLAGS)  -o $@ $<
-	
 
-$(NAME): $(OBJ) 
-	ar rc $(NAME) $(OBJ)
+$(NAME):  $(OBJ) $(HEADERS) $(OBJDIR)
+	@ar rc $(NAME) $(OBJ)
+	@echo ${BG}"[ ✓ ] $@"
+
+$(OBJDIR)%.o: source/memory/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
+	@echo ${BG}"[ ✓ ] $@"
+
+$(OBJDIR)%.o: source/str/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
+
+
+$(OBJDIR)%.o: source/is/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
+
+
+$(OBJDIR)%.o: source/put/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
+
+
+$(OBJDIR)%.o: source/lists/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
+
+
+$(OBJDIR)%.o: source/find/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
+
+$(OBJDIR)%.o: source/%.c
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(CFLAGS) $< -o $@ $(INCLUDES)
 
 clean: 
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
+	@rm -rf $(OBJDIR)
+	@echo ${BR}"[ ✗ ] $(OBJDIR)"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@echo ${BR}"[ ✗ ] $(NAME)"
 
 real: fclean all
